@@ -240,12 +240,37 @@
 
     \subsection{Logging}\label{sec:3.2}
 
-    % TODO: Add text
+    The following log-levels are the only ones allowed in this library. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}} and must be used in the following order (most granular first):
+
+    \begin{enumerate}
+        \item Fine
+        \item Info
+        \item Warning
+        \item Severe
+    \end{enumerate}
+
+    Every single log message must include the date and time (including milliseconds) in the \href{https://en.wikipedia.org/wiki/ISO_8601}{ISO 8601} format. The following actions/events must be logged at the specified log level.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{p{.2\linewidth} | p{.5\linewidth} | p{.2\linewidth}}
+            \textbf{Event}                                             & \textbf{Metadata}                                            & \textbf{Loglevel} \\\hline
+            Request received                                           & unique request identifier, request source, starting file     & Info              \\\hline
+            File is visited (does not necessarily mean that it's read) & count of analyses for which this file is relevant                     & Fine              \\\hline
+            File disappears mid-read                                   & file path, count of analyses for which this file is relevant                     & Info              \\\hline
+            File tree traverse started                                 & first file path, count of active analyses in queue           & Info              \\\hline
+            File tree traverse ended                                   & last file path, count of active analyses in queue            & Info              \\\hline
+            Analysis data of a request is discarded                    & unique request identifier                                    & Info              \\\hline
+            No files in file tree                                      &                                                              & Warning
+        \end{tabular}
+        \caption{Actions that must be logged including the metadata specified in their respective log-level.}
+        \label{tab:log_actions}
+    \end{table}
 
 
-    \subsection{Implementation and Testing}\label{sec:3.3}
+    \subsection{Testing}\label{sec:3.3}
 
-    % TODO: Add text
+    The library must be tested with, at the bare minimum, an automated test for every paragraph in section 3.2 and every log event in 3.3. The logs to test section 3.3 need not arise from a functionality of the code, but may be tested by faking log statements.
 
 
     \subsection{Documentation}\label{sec:3.4}
