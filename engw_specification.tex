@@ -16,7 +16,8 @@
 % See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
-\usepackage[a4paper, top=.4cm, bottom=.6cm, left=.4cm, right=.4cm, includeheadfoot, headheight=31pt, headsep=0pt]{geometry} % to change the page dimensions
+\usepackage[a4paper, top=1cm, bottom=1.2cm, left=2cm, right=2cm, includeheadfoot, headheight=31pt,
+    headsep=0pt]{geometry} % to change the page dimensions
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
 \usepackage{multicol}
 \setlength{\headheight}{35pt}
@@ -67,7 +68,7 @@
 }
 
 % Title page info
-\title{Engineering Writing}
+\title{Rotating Index Load Balancer Pre-Production Specification}
 \author{Lani Wagner\\\href{mailto:lani.wagner@students.fhnw.ch}{lani.wagner@students.fhnw.ch}}
 \date{\today\ \currenttime} % Activate to display a given date or no
 % otherwise the current date is printed
@@ -83,7 +84,8 @@
 \pagestyle{fancy} % options: empty , plain , fancy
 \renewcommand{\headrulewidth}{0pt} % customise the layout...
 \lhead{}\chead{}\rhead{\includegraphics[height=0.88\headheight]{img/fhnw_ht_10mm.eps}}
-\lfoot{v0.0.\theversionNumber\ \textcolor{gray}{\today\ \currenttime}}\cfoot{\thepage\ / {\hypersetup{hidelinks}\pageref{LastPage}}}\rfoot{Lani Wagner}
+\lfoot{v0.0.\theversionNumber\ \textcolor{gray}{\today\ \currenttime}}\cfoot{\thepage\ /
+        {\hypersetup{hidelinks}\pageref{LastPage}}}\rfoot{Lani Wagner}
 
 %%% SECTION TITLE APPEARANCE
 \usepackage{sectsty}
@@ -115,18 +117,114 @@
     \clearpage\maketitle
     \thispagestyle{empty}
     \begin{abstract}
-        // TODO: Add abstract here
+        This document contains the pre-production specificatino written for an implementation of a rotating index
+        load balancer to reduce the I/O load for a service that is tasked with handling a large amount of requests,
+        so that the I/O bottleneck is greatly reduced. This specification was written for the FHNW module Engineering
+        Writing (engw).
     \end{abstract}
     {\hypersetup{hidelinks} \tableofcontents}
     \newpage
 
-    \begin{multicols*}{2}
-        \section{2022 Spring Semester}
-        Test
 
-    \end{multicols*}
+    \section{General}
+
+    the result of this specification will be a library. this document documents the features this library must
+    provide. these specification is purposefully \textit{not} programming-language-specific to allow the
+    implementation in any language that best suits the existing infrastructure. The terminology in this document
+    will be leaning on the terms most often used in while working with the java programming-language, such as
+    type definitions. When working in another language the appropriate equivalent must be used in consideration
+    of applicability and performance.
+
+
+    \section{Design}
+
+    The library shall provide an instantiable Singleton\textsuperscript{\ref{tab:glossary}} class named
+    \verb|RotationBalancer<T>| with the following arguments. The required arguments must be implemented in the final
+    product, but the passing of the arguments for the creation of the object is not required. The type \verb|T| or
+    \verb|<T>| is a generic type that is set for every analysis when that request is made.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{p{.1\linewidth} | p{.2\linewidth} | p{.2\linewidth} | p{.4\linewidth}}
+            \textbf{Required} & \textbf{Type} & \textbf{Name} & \textbf{Content}
+            \\\hline
+            Yes & \verb|List<Path>| & \verb|folders| & The folders that should be scanned.
+            \\\hline
+            No & \verb|List<Path>| & \verb|excludedFolders| &
+            Subfolders of
+            \verb|folders|\footnotemark[1] that don't need to be scanned. \\\hline
+            No & \verb|Predicate<Path>| & \verb|isFileRelevant| & Executable function to verify whether the file is
+            relevant\footnotemark[2] for the analysis.
+        \end{tabular}
+        \caption{Library class arguments.}
+        \label{tab:lib_args}
+    \end{table}
+    \footnotetext[1]{This must be verified when the class instance is created.}
+    \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
+    location. If no function is passed every file must be treated as relevant.}
+
+    The instance shall only scan for files as long as active requests are being processed. This means that the scan
+    should not start as soon as the class is instantiated. If the last request has been completed the balancer
+    shall go into a sleeping state and woken up when a new request arrives.
+
+    Every request to the API must be sent to an existing instance. That means instantiating the object before
+    starting any analysis is critical. Once the object exists the user must be able to call the API with the following
+    arguments and receive a response of type \verb|List<T>|.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{p{.1\linewidth} | p{.2\linewidth} | p{.2\linewidth} | p{.4\linewidth}}
+            \textbf{Required} & \textbf{Type} & \textbf{Name} & \textbf{Content}
+            \\\hline
+            Yes & \verb|Function<Path, T>| & \verb|analyzer| & The analysis function applied to every
+            relevant\footnotemark[2] file. \\\hline
+            No & \verb|List<Path>| & \verb|excludedFolders| &
+            Subfolders of
+            \verb|folders|\footnotemark[1] that don't need to be scanned. \\\hline
+            No & \verb|Predicate<Path>| & \verb|isFileRelevant| & Executable function to verify whether the file is
+            relevant\footnotemark[2] for the analysis.
+        \end{tabular}
+        \caption{Library analysis call arguments.}
+        \label{tab:call_args}
+    \end{table}
+
+
+    \section{Functional and Non-Functional Requirements}
+
+    % TODO: Add text
+
+    \subsection{Handling Unpredictability}
+
+    % TODO: Add text
+
+    \subsection{Logging}
+
+    % TODO: Add text
+
+    \subsection{Implementation and Testing}
+
+    % TODO: Add text
+
+    \subsection{Documentation}
+
+    % TODO: Add text
 
     \newpage
+
+
+    \section{Glossary}
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{p{.3\linewidth} | p{.6\linewidth}}
+            \textbf{Term} & \textbf{Definition}
+            \\\hline
+            Singleton & A class that can only exist once in memory. Trying to create a new instance of the class
+            should return the existing instance.
+        \end{tabular}
+        \caption{Glossary definitions.}
+        \label{tab:glossary}
+    \end{table}
     \printbibliography[heading=bibintoc]
     \listoffigures
     \listoftables
