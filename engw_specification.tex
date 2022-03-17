@@ -202,10 +202,39 @@
         \item[\ref{sec:3.4}] \hyperref[sec:3.4]{Documentation}
     \end{itemize}
 
+    \subsection{File Tree}
+
+    To talk about \hyprref[sec:3.1]{unpredictability}, the term of file tree and how the file tree must be defined, is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint} value.
+
 
     \subsection{Handling Unpredictability}\label{sec:3.1}
 
-    % TODO: Add text
+    This library must be able to work in an environment where files behave totally unpredictablly, due to external system or user interaction. The following possibilities and their respective appropriate responses are defined here.
+
+    To handle unpredictability the term ``rotation'' needs to be defined. A rotation from any point has a starting file. A complete rotation goes from the starting file (inclusive) to the last file still in the file tree and then from the first file in the next file tree scan to the last file before the original starting file.
+
+
+    \paragraph{A file disappears/is deleted mid-read}\label{par:file_disappear} ~\\
+    The user should not notice anything about this. Meaning that any exceptions get caught and the file is not analyzed.
+
+
+    \subparagraph{A file disappears/is deleted mid-analysis} ~\\
+    This case does not include the possibility that a file disappears mid-analysis. If a file disappears during the analysisthe analysis should keep going undisturbed. We are interested about the results of the analysis at the time of read, not what it might be at the end of the analysis.
+
+
+    \paragraph{All files (and folders) are deleted}\label{par:everything_deleted} ~\\
+    If the read operation is interrupted by a file disappearing, that file is ignored as stated in the case of \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} and the next file relevant for analysis is searched. If there are no further files to analyze the current result is returned.
+
+
+    \subparagraph{All files (and folders) are replaced by a completely new set of files and folders} ~\\
+    As stated in the paragraph \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} the current file is ignored for analysis if a read operation is interrupted.
+
+
+    \paragraph{The file where the analysis of a certain request started isn't around anymore on completion of one rotation\textsuperscript{\ref{tab:glossary}}} ~\\
+    If the starting file cannot be found, reaching any parent folder\footnote{This includes parent folders at any depth. Close parent folders take precendence.} means reaching the end of a rotation in this case. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
+
+    If no parent folder can be found, all analysis data from the previous traverse of the file tree is discarded. The analysis then starts anew from the first file of the file tree and ends with the last file in the file tree.\\
+    If the starting file was the first file in the file tree and it can't be found once the rest of the file tree was traversed the rotation is considered completed.
 
 
     \subsection{Logging}\label{sec:3.2}
@@ -234,7 +263,9 @@
             \textbf{Term} & \textbf{Definition}
             \\\hline
             Singleton & A class that can only exist once in memory. Trying to create a new instance of the class
-            should return the existing instance.
+            should return the existing instance. \\\hline
+            Rotation & A single go around the list of files considered for analysis \\\hline
+            Starting file & The file an analysis starts with.
         \end{tabular}
         \caption{Glossary definitions.}
         \label{tab:glossary}
