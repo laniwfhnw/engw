@@ -232,13 +232,13 @@
 
 
     \paragraph{The file where the analysis of a certain request started isn't around anymore on completion of one rotation\textsuperscript{\ref{tab:glossary}}} ~\\
-    If the starting file cannot be found, reaching any parent folder\footnote{This includes parent folders at any depth. Close parent folders take precendence.} means reaching the end of a rotation in this case. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
+    If the starting file cannot be found, reaching any parent folder\footnote{This includes parent folders at any depth. Closer parent folders take precendence.} means reaching the end of a rotation in this case. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
 
     If no parent folder can be found, all analysis data from the previous traverse of the file tree is discarded. The analysis then starts anew from the first file of the file tree and ends with the last file in the file tree.\\
     If the starting file was the first file in the file tree and it can't be found once the rest of the file tree was traversed the rotation is considered completed.
 
 
-    \subsection{Logging}\label{sec:3.2}
+    \subsection{Logging}\label{sec:3.3}
 
     The following log-levels are the only ones allowed in this library. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}} and must be used in the following order (most granular first):
 
