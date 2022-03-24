@@ -16,7 +16,7 @@
 % See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
-\usepackage[a4paper, top=1cm, bottom=1.2cm, left=2cm, right=2cm, includeheadfoot, headheight=31pt,
+\usepackage[a4paper, top=2cm, bottom=2.2cm, left=3cm, right=3cm, includeheadfoot, headheight=31pt,
     headsep=0pt]{geometry} % to change the page dimensions
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
 \usepackage{multicol}
@@ -162,6 +162,7 @@
     \footnotetext[1]{This must be verified when the class instance is created.}
     \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
     location. If no function is passed every file must be treated as relevant.}
+    \addtocounter{footnote}{2}
 
     The instance shall only scan for files as long as active requests are being processed. This means that the scan
     should not start as soon as the class is instantiated. If the last request has been completed the balancer
