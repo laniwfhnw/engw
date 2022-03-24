@@ -194,19 +194,21 @@
 
     The contractor shall implement the following functional and non-functional features.
     \begin{itemize}
-        \item[\ref{sec:3.1}] \hyperref[sec:3.1]{Handling Unpredictability}
-        \item[\ref{sec:3.2}] \hyperref[sec:3.2]{Logging}
-        \item[\ref{sec:3.3}] \hyperref[sec:3.3]{Implementation and Testing}
-        \item[\ref{sec:3.4}] \hyperref[sec:3.4]{Documentation}
+        \item[\ref{sec:3.1}] \hyperref[sec:3.1]{File Tree}
+        \item[\ref{sec:3.2}] \hyperref[sec:3.2]{Handling Unpredictability}
+        \item[\ref{sec:3.3}] \hyperref[sec:3.3]{Logging}
+        \item[\ref{sec:3.4}] \hyperref[sec:3.4]{Code Style}
+        \item[\ref{sec:3.5}] \hyperref[sec:3.5]{Testing}
+        \item[\ref{sec:3.6}] \hyperref[sec:3.6]{Documentation}
     \end{itemize}
 
 
-    \subsection{File Tree}
+    \subsection{File Tree}\label{sec:3.1}
 
     To talk about \hyperref[sec:3.1]{unpredictability}, the term of file tree and how the file tree must be defined, is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint} value.
 
 
-    \subsection{Handling Unpredictability}\label{sec:3.1}
+    \subsection{Handling Unpredictability}\label{sec:3.2}
 
     This library must be able to work in an environment where files behave totally unpredictablly, due to external system or user interaction. The following possibilities and their respective appropriate responses are defined here.
 
