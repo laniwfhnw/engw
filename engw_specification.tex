@@ -278,9 +278,37 @@
     The library must be tested with, at the bare minimum, an automated test for every paragraph in section 3.2 and every log event in 3.3. The logs to test section 3.3 need not arise from a functionality of the code, but may be tested by faking log statements.
 
 
-    \subsection{Documentation}\label{sec:3.4}
+    \subsection{Documentation}\label{sec:3.6}
 
-    % TODO: Add text
+    No additional documentation -- outside of the code, that is -- must be provided. The code must be documented using JavaDoc or the relevant equivalent in the implementation language. Every part of the public interface must be documented.
+
+    \begin{itemize}
+        \item Classes
+        \begin{itemize}
+            \item Interfaces
+            \item Enums
+        \end{itemize}
+        \item Functions
+    \end{itemize}
+
+    Each documented artifact must contain the following information for
+
+    \begin{itemize}
+        \item[] classes\footnote{Do not document \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}{anonymous inner classes}.}:
+        \begin{itemize}
+            \item Short description
+        \end{itemize}
+        \item[] functions:
+        \begin{itemize}
+            \item Short description
+            \item Parameters using the \verb|@param| tag
+            \item Return type using the \verb|@return| tag \footnote{if not \verb|void|}
+            \item Exceptions using the \verb|@exception| tag \footnote{as specified in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#throwstag}{Documenting Exceptions with @throws Tag}}
+            \item
+        \end{itemize}
+    \end{itemize}
+
+    Tags must be ordered as specified in the section \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}{Order of Tags} in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}{How To Write Doc Comments for the Javadoc Tool}
 
     \newpage
 
