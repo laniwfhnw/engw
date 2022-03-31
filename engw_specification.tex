@@ -118,7 +118,7 @@
     \clearpage\maketitle
     \thispagestyle{empty}
     \begin{abstract}
-        This document contains the pre-production specificatino written for an implementation of a rotating index
+        This document contains the pre-production specification written for an implementation of a rotating index
         load balancer to reduce the I/O load for a service that is tasked with handling a large amount of requests,
         so that the I/O bottleneck is greatly reduced. This specification was written for the FHNW module Engineering
         Writing (engw).
@@ -152,16 +152,16 @@
             \\\hline
             No & \verb|List<Path>| & \verb|excludedFolders| &
             Subfolders of
-            \verb|folders|\footnotemark[1] that don't need to be scanned. \\\hline
+            \verb|folders|\hyperref[fn:1]{\footnotemark[1]} that don't need to be scanned. \\\hline
             No & \verb|Predicate<Path>| & \verb|isFileRelevant| & Executable function to verify whether the file is
-            relevant\footnotemark[2] for the analysis.
+            relevant\hyperref[fn:2]{\footnotemark[2]} for the analysis.
         \end{tabular}
         \caption{Library class arguments.}
         \label{tab:lib_args}
     \end{table}
-    \footnotetext[1]{This must be verified when the class instance is created.}
+    \footnotetext[1]{This must be verified when the class instance is created.}\label{fn:1}
     \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
-    location. If no function is passed every file must be treated as relevant.}
+    location. If no function is passed every file must be treated as relevant.}\label{fn:2}
     \addtocounter{footnote}{2}
 
     The instance shall only scan for files as long as active requests are being processed. This means that the scan
@@ -178,12 +178,12 @@
             \textbf{Required} & \textbf{Type} & \textbf{Name} & \textbf{Content}
             \\\hline
             Yes & \verb|Function<Path, T>| & \verb|analyzer| & The analysis function applied to every
-            relevant\footnotemark[2] file. \\\hline
+            relevant\hyperref[fn:2]{\footnotemark[2]} file. \\\hline
             No & \verb|List<Path>| & \verb|excludedFolders| &
             Subfolders of
-            \verb|folders|\footnotemark[1] that don't need to be scanned. \\\hline
+            \verb|folders|\hyperref[fn:1]{\footnotemark[1]} that don't need to be scanned. \\\hline
             No & \verb|Predicate<Path>| & \verb|isFileRelevant| & Executable function to verify whether the file is
-            relevant\footnotemark[2] for the analysis.
+            relevant\hyperref[fn:2]{\footnotemark[2]} for the analysis.
         \end{tabular}
         \caption{Library analysis call arguments.}
         \label{tab:call_args}
@@ -305,7 +305,6 @@
             \item Parameters using the \verb|@param| tag
             \item Return type using the \verb|@return| tag \footnote{if not \verb|void|}
             \item Exceptions using the \verb|@exception| tag \footnote{as specified in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#throwstag}{Documenting Exceptions with @throws Tag}}
-            \item
         \end{itemize}
     \end{itemize}
 
