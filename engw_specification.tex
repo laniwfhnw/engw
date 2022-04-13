@@ -44,6 +44,7 @@
 \usepackage{lipsum}
 \usepackage{tabularx}
 \usepackage{calculator}
+\usepackage[bottom]{footmisc}
 \bibliography{refs}
 % These packages are all incorporated in the memoir class to one degree or another...
 
@@ -127,7 +128,6 @@
     \newpage
 
 
-
     \section{General}
 
     The result of this specification will be a library. This document documents the features this library must provide. This specification is purposefully \textit{not} programming-language-specific to allow the implementation in any language that best suits the existing infrastructure. The terminology in this document will be leaning on the terms most often used in while working with the java programming-language, such as type definitions. When working in another language the appropriate equivalent must be used in consideration of applicability and performance.
@@ -135,12 +135,11 @@
     Any specifications derived from referenced documents are overridden by any specifications in this document.
 
 
-
     \section{Design}
 
     The library shall provide an instantiable Singleton\textsuperscript{\ref{tab:glossary}} class named
-    \verb|RotationBalancer<T>| with the following arguments. The required arguments must be implemented in the final
-    product, but the passing of the arguments for the creation of the object is not required. The type \verb|T| or
+    \verb|RotationBalancer<T>| with the following arguments. All required arguments must be implemented in the final
+    product, but the passing of the arguments for the creation of the object (when using the library) is not required. The type \verb|T| or
     \verb|<T>| is a generic type that is set for every analysis when that request is made.
 
     \begin{table}[H]
@@ -148,7 +147,7 @@
         \begin{tabular}{p{.1\linewidth} | p{.2\linewidth} | p{.2\linewidth} | p{.4\linewidth}}
             \textbf{Required} & \textbf{Type} & \textbf{Name} & \textbf{Content}
             \\\hline
-            Yes & \verb|List<Path>| & \verb|folders| & The folders that should be scanned.
+            Yes & \verb|List<Path>| & \verb|folders| & The folders that shall be scanned.
             \\\hline
             No & \verb|List<Path>| & \verb|excludedFolders| &
             Subfolders of
@@ -188,7 +187,9 @@
         \caption{Library analysis call arguments.}
         \label{tab:call_args}
     \end{table}
-
+    \footnotetext[1]{This must be verified when the class instance is created.}
+    \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
+    location. If no function is passed every file must be treated as relevant.}
 
 
     \section{Functional and Non-Functional Features}
@@ -203,45 +204,37 @@
         \item[\ref{sec:3.6}] \hyperref[sec:3.6]{Documentation}
     \end{itemize}
 
-
     \subsection{File Tree}\label{sec:3.1}
 
-    To talk about \hyperref[sec:3.1]{unpredictability}, the term of file tree and how the file tree must be defined, is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint} value.
-
+    To talk about \hyperref[sec:3.1]{unpredictability}, the term of file tree and how the file tree must be defined, is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization, the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint}\footnote{See \url{https://en.wikipedia.org/wiki/Code_point}.} value.
 
     \subsection{Handling Unpredictability}\label{sec:3.2}
 
-    This library must be able to work in an environment where files behave totally unpredictablly, due to external system or user interaction. The following possibilities and their respective appropriate responses are defined here.
+    This library shall be able to work in an environment where files behave totally unpredictablly, due to external system or user interaction. The following possibilities and their respective appropriate responses are defined here.
 
     To handle unpredictability the term ``rotation'' needs to be defined. A rotation from any point has a starting file. A complete rotation goes from the starting file (inclusive) to the last file still in the file tree and then from the first file in the next file tree scan to the last file before the original starting file.
 
-
     \paragraph{A file disappears/is deleted mid-read}\label{par:file_disappear} ~\\
-    The user should not notice anything about this. Meaning that any exceptions get caught and the file is not analyzed.
-
+    Any exceptions that occur due to this shall be caught and handled silently (without notifying the user).
 
     \subparagraph{A file disappears/is deleted mid-analysis} ~\\
-    This case does not include the possibility that a file disappears mid-analysis. If a file disappears during the analysisthe analysis should keep going undisturbed. We are interested about the results of the analysis at the time of read, not what it might be at the end of the analysis.
-
+    If a file disappears during the analysis, the analysis shall keep going undisturbed. We are interested about the results of the analysis at the time of read, not what it might have been when the analysis was started.
 
     \paragraph{All files (and folders) are deleted}\label{par:everything_deleted} ~\\
-    If the read operation is interrupted by a file disappearing, that file is ignored as stated in the case of \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} and the next file relevant for analysis is searched. If there are no further files to analyze the current result is returned.
-
+    If the read operation is interrupted by a file disappearing, that file shall be ignored as stated in the case of \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} and the next file relevant for analysis shall be read. If there are no further files to analyze the current result shall be returned.
 
     \subparagraph{All files (and folders) are replaced by a completely new set of files and folders} ~\\
-    As stated in the paragraph \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} the current file is ignored for analysis if a read operation is interrupted.
-
+    As stated in the paragraph \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} the current file shall be ignored for analysis if a read operation is interrupted.
 
     \paragraph{The file where the analysis of a certain request started isn't around anymore on completion of one rotation\textsuperscript{\ref{tab:glossary}}} ~\\
-    If the starting file cannot be found, reaching any parent folder\footnote{This includes parent folders at any depth. Closer parent folders take precendence.} means reaching the end of a rotation in this case. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
+    If the starting file is not found found, reaching any parent folder of that file must result in the end of the rotation. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
 
-    If no parent folder can be found, all analysis data from the previous traverse of the file tree is discarded. The analysis then starts anew from the first file of the file tree and ends with the last file in the file tree.\\
-    If the starting file was the first file in the file tree and it can't be found once the rest of the file tree was traversed the rotation is considered completed.
-
+    If no parent folder can be found, all analysis data from the previous traverse of the file tree must be discarded. The analysis must then start anew from the first file of the file tree and must end with the last file in the file tree.\\
+    If the starting file was the first file in the file tree and it cannot be found, once the rest of the file tree was traversed, the rotation is considered completed and the result must be returned.
 
     \subsection{Logging}\label{sec:3.3}
 
-    The following log-levels are the only ones allowed in this library. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}} and must be used in the following order (most granular first):
+    Any implemented log-levels shall be one of the following. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}}\footnote{See \url{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}.} and must be used in the following order (most granular first):
 
     \begin{enumerate}
         \item Fine
@@ -250,7 +243,7 @@
         \item Severe
     \end{enumerate}
 
-    Every single log message must include the date and time (including milliseconds) in the \href{https://en.wikipedia.org/wiki/ISO_8601}{ISO 8601} format. The following actions/events must be logged at the specified log level.
+    Every log message shall include the date and time (including milliseconds) in the \href{https://en.wikipedia.org/wiki/ISO_8601}{ISO 8601}\footnote{See \url{https://en.wikipedia.org/wiki/ISO_8601}.} format. The following actions/events must be logged at the specified log level.
 
     \begin{table}[H]
         \centering
@@ -268,16 +261,13 @@
         \label{tab:log_actions}
     \end{table}
 
-
     \subsection{Code Style}\label{sec:3.4}
 
-    All code must adhere to the \href{https://google.github.io/styleguide/javaguide.html}{Google Java Style Guide}.
-
+    All code must adhere to the \href{https://google.github.io/styleguide/javaguide.html}{Google Java Style Guide}\footnote{See \url{https://google.github.io/styleguide/javaguide.html}.}.
 
     \subsection{Testing}\label{sec:3.5}
 
-    The library must be tested with, at the bare minimum, an automated test for every paragraph in section 3.2 and every log event in 3.3. The logs to test section 3.3 need not arise from a functionality of the code, but may be tested by faking log statements.
-
+    The library must be tested with, at the bare minimum, an automated test for every paragraph in \hyperref[sec:3.2]{section 3.2} and every log event in \hyperref[sec:3.3]{section 3.3}. The logs to test \hyperref[sec:3.3]{section 3.3} need not arise from a functionality of the code, but may be tested by faking log statements.
 
     \subsection{Documentation}\label{sec:3.6}
 
@@ -295,7 +285,7 @@
     Each documented artifact must contain the following information for
 
     \begin{itemize}
-        \item[] classes\footnote{Do not document \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}{anonymous inner classes}.}:
+        \item[] classes\footnote{Do not document \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}{anonymous inner classes} (\url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}).}:
         \begin{itemize}
             \item Short description
         \end{itemize}
@@ -304,14 +294,13 @@
             \item Short description
             \item Parameters using the \verb|@param| tag
             \item Return type using the \verb|@return| tag \footnote{if not \verb|void|}
-            \item Exceptions using the \verb|@exception| tag \footnote{as specified in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#throwstag}{Documenting Exceptions with @throws Tag}}
+            \item Exceptions using the \verb|@exception| tag \footnote{as specified in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#throwstag}{Documenting Exceptions with @throws Tag} (\url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#throwstag})}
         \end{itemize}
     \end{itemize}
 
-    Tags must be ordered as specified in the section \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}{Order of Tags} in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}{How To Write Doc Comments for the Javadoc Tool}
+    Tags must be ordered as specified in the section \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}{Order of Tags}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}.} in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}{How To Write Doc Comments for the Javadoc Tool}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}.}
 
     \newpage
-
 
 
     \section{Glossary}
