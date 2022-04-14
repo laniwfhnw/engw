@@ -130,7 +130,7 @@
 
     \section{General}
 
-    The result of this specification will be a library. This document documents the features this library must provide. This specification is purposefully \textit{not} programming-language-specific to allow the implementation in any language that best suits the existing infrastructure. The terminology in this document will be leaning on the terms most often used in while working with the java programming-language, such as type definitions. When working in another language the appropriate equivalent must be used in consideration of applicability and performance.
+    The result of this specification will be a library. This document documents the features this library shall provide. This specification is purposefully \textit{not} programming-language-specific to allow the implementation in any language that best suits the existing infrastructure. The terminology in this document will be leaning on the terms most often used in while working with the java programming-language, such as type definitions. When working in another language the appropriate equivalent must be used in consideration of applicability and performance.
 
     Any specifications derived from referenced documents are overridden by any specifications in this document.
 
@@ -158,17 +158,17 @@
         \caption{Library class arguments.}
         \label{tab:lib_args}
     \end{table}
-    \footnotetext[1]{This must be verified when the class instance is created.}\label{fn:1}
+    \footnotetext[1]{This shall be verified when the class instance is created.}\label{fn:1}
     \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
-    location. If no function is passed every file must be treated as relevant.}\label{fn:2}
+    location. If no function is passed every file shall be treated as relevant.}\label{fn:2}
     \addtocounter{footnote}{2}
 
     The instance shall only scan for files as long as active requests are being processed. This means that the scan
     should not start as soon as the class is instantiated. If the last request has been completed the balancer
     shall go into a sleeping state and woken up when a new request arrives.
 
-    Every request to the API must be sent to an existing instance. That means instantiating the object before
-    starting any analysis is critical. Once the object exists the user must be able to call the API with the following
+    Every request to the API shall be sent to an existing instance. That means instantiating the object before
+    starting any analysis is critical. Once the object exists the user shall be able to call the API with the following
     arguments and receive a response of type \verb|List<T>|.
 
     \begin{table}[H]
@@ -187,9 +187,9 @@
         \caption{Library analysis call arguments.}
         \label{tab:call_args}
     \end{table}
-    \footnotetext[1]{This must be verified when the class instance is created.}
+    \footnotetext[1]{This shall be verified when the class instance is created.}
     \footnotetext[2]{This f.e. allows for the exclusion of irrelevant files that may be stored in the same
-    location. If no function is passed every file must be treated as relevant.}
+    location. If no function is passed every file shall be treated as relevant.}
 
 
     \section{Functional and Non-Functional Features}
@@ -206,7 +206,7 @@
 
     \subsection{File Tree}\label{sec:3.1}
 
-    To talk about \hyperref[sec:3.1]{unpredictability}, the term of file tree and how the file tree must be defined, is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization, the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint}\footnote{See \url{https://en.wikipedia.org/wiki/Code_point}.} value.
+    To talk about \hyperref[sec:3.1]{unpredictability}, the term of file tree and how the file tree is defined is crucial. The file tree has a root, which is the folder that is passed to the library on initialization.\\If multiple folders were passed on initialization, the root is an imaginary folder that is above all folders specified. Any files and folders at the same depth level in the tree are to be sorted in ascending lexicographical order according to their \href{https://en.wikipedia.org/wiki/Code_point}{Unicode codepoint}\footnote{See \url{https://en.wikipedia.org/wiki/Code_point}.} value.
 
     \subsection{Handling Unpredictability}\label{sec:3.2}
 
@@ -227,14 +227,14 @@
     As stated in the paragraph \hyperref[par:file_disappear]{``A file disappears/is deleted mid-read''} the current file shall be ignored for analysis if a read operation is interrupted.
 
     \paragraph{The file where the analysis of a certain request started isn't around anymore on completion of one rotation\textsuperscript{\ref{tab:glossary}}} ~\\
-    If the starting file is not found found, reaching any parent folder of that file must result in the end of the rotation. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
+    If the starting file is not found, reaching any parent folder of that file shall result in the end of the rotation. Parent folders include parent folders at any depth in the tree in upward direction (considering the root of the file system to be at the top). Folders further away from the root folder take precedence.
 
-    If no parent folder can be found, all analysis data from the previous traverse of the file tree must be discarded. The analysis must then start anew from the first file of the file tree and must end with the last file in the file tree.\\
-    If the starting file was the first file in the file tree and it cannot be found, once the rest of the file tree was traversed, the rotation is considered completed and the result must be returned.
+    If no parent folder can be found, all analysis data from the previous traverse of the file tree shall be discarded. The analysis shall then start anew from the first file of the file tree and end with the last file in the file tree.\\
+    If the starting file was the first file in the file tree and it cannot be found, once the rest of the file tree was traversed, the rotation is considered completed and the result shall be returned.
 
     \subsection{Logging}\label{sec:3.3}
 
-    Any implemented log-levels shall be one of the following. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}}\footnote{See \url{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}.} and must be used in the following order (most granular first):
+    Any implemented log-levels must be one of the following. They are a subset of the log levels specified in the enum \href{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}{\texttt{java.util.logging.Level}}\footnote{See \url{https://docs.oracle.com/javase/8/docs/api/java/util/logging/class-use/Level.html}.} and must be used in the following order (most granular first):
 
     \begin{enumerate}
         \item Fine
@@ -243,7 +243,7 @@
         \item Severe
     \end{enumerate}
 
-    Every log message shall include the date and time (including milliseconds) in the \href{https://en.wikipedia.org/wiki/ISO_8601}{ISO 8601}\footnote{See \url{https://en.wikipedia.org/wiki/ISO_8601}.} format. The following actions/events must be logged at the specified log level.
+    Every log message shall include the date and time (including milliseconds) in the \href{https://en.wikipedia.org/wiki/ISO_8601}{ISO 8601}\footnote{See \url{https://en.wikipedia.org/wiki/ISO_8601}.} format. The following actions/events shall be logged at the specified log level.
 
     \begin{table}[H]
         \centering
@@ -257,7 +257,7 @@
             Analysis data of a request is discarded                    & unique request identifier                                    & Info              \\\hline
             No files in file tree                                      &                                                              & Warning
         \end{tabular}
-        \caption{Actions that must be logged including the metadata specified in their respective log-level.}
+        \caption{Actions that shall be logged including the metadata specified in their respective log-level.}
         \label{tab:log_actions}
     \end{table}
 
@@ -271,7 +271,7 @@
 
     \subsection{Documentation}\label{sec:3.6}
 
-    No additional documentation -- outside of the code, that is -- must be provided. The code must be documented using JavaDoc or the relevant equivalent in the implementation language. Every part of the public interface must be documented.
+    No additional documentation -- outside of the code, that is -- must be provided. The code shall be documented using JavaDoc or the relevant equivalent in the implementation language. Every part of the public interface shall be documented.
 
     \begin{itemize}
         \item Classes
@@ -282,7 +282,7 @@
         \item Functions
     \end{itemize}
 
-    Each documented artifact must contain the following information for
+    Each documented artifact shall contain the following information for
 
     \begin{itemize}
         \item[] classes\footnote{Do not document \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}{anonymous inner classes} (\url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#anonymous}).}:
@@ -298,7 +298,7 @@
         \end{itemize}
     \end{itemize}
 
-    Tags must be ordered as specified in the section \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}{Order of Tags}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}.} in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}{How To Write Doc Comments for the Javadoc Tool}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}.}
+    Tags shall be ordered as specified in the section \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}{Order of Tags}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#orderoftags}.} in \href{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}{How To Write Doc Comments for the Javadoc Tool}\footnote{See \url{https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html}.}
 
     \newpage
 
